@@ -22,7 +22,10 @@ export default function Home() {
   return (
     <div>
       <h1>Painel Principal</h1>
-      <Link to="/chamado">Criar Chamado</Link> {/* Link adicionado aqui */}
+      <nav>
+        <Link to="/chamado">Criar Chamado</Link><br />
+        <Link to="/painel-chamados">Painel de Chamados</Link>
+      </nav>
 
       <h2>Chamados:</h2>
       <ul>

@@ -1,12 +1,12 @@
-from rest_framework import viewsets, filters
-from django_filters.rest_framework import DjangoFilterBackend
-from .models import SolicitacaoEquipamento
-from .serializers import SolicitacaoEquipamentoSerializer
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from .models import Equipamento, SolicitacaoEquipamento
+from .serializers import EquipamentoSerializer, SolicitacaoEquipamentoSerializer
 
+# views.py  
 class SolicitacaoEquipamentoViewSet(viewsets.ModelViewSet):
-    queryset = SolicitacaoEquipamento.objects.all().order_by('-data_solicitacao')
+    queryset = SolicitacaoEquipamento.objects.all()
     serializer_class = SolicitacaoEquipamentoSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['status']
-    search_fields = ['descricao']
-    ordering_fields = ['data_solicitacao']
+
+    def perform_create(self, serializer):
+        serializer.save(solicitante=self.request.user)
