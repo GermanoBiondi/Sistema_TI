@@ -1,13 +1,17 @@
 from django.db import models
+from django.conf import settings
 
 class SolicitacaoEquipamento(models.Model):
-    colaborador = models.CharField(max_length=100)
-    equipamento = models.CharField(max_length=100)
-    justificativa = models.TextField()
-    status = models.CharField(max_length=10, choices=[
-        ('pendente','Pendente'), ('aprovado','Aprovado'), ('negado','Negado')
-    ], default='pendente')
+    nome = models.CharField(max_length=100)
+    descricao = models.TextField(blank=True)
     data_solicitacao = models.DateTimeField(auto_now_add=True)
+    solicitante = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    status = models.CharField(max_length=20, default='Pendente')
+
+class Equipamento(models.Model):
+    nome = models.CharField(max_length=100)
+    descricao = models.TextField(blank=True)
+    data_cadastro = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.colaborador} - {self.equipamento}"
+        return self.nome
