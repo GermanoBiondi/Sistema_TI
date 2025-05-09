@@ -12,6 +12,7 @@ export default function App() {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
           <Route
             path="/home"
             element={
@@ -28,10 +29,13 @@ export default function App() {
               </PrivateRoute>
             }
           />
-          <Route path="/painel-chamados" 
-          element={
-            <PainelChamados 
-              />} 
+          <Route 
+            path="/painel-chamados" 
+            element={
+              <PrivateRoute>
+                <PainelChamados />
+              </PrivateRoute>
+            } 
           />
         </Routes>
       </AuthProvider>

@@ -1,4 +1,3 @@
-# settings.py (atualizado)
 from pathlib import Path
 from datetime import timedelta
 
@@ -27,7 +26,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # Mover para antes do CommonMiddleware
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -93,13 +92,10 @@ REST_FRAMEWORK = {
     ],
 }
 
-# JWT Config (opcional, mas recomendado)
-from datetime import timedelta
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-# CORS
 CORS_ALLOW_ALL_ORIGINS = True

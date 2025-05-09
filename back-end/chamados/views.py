@@ -42,9 +42,9 @@ class ChamadoViewSet(viewsets.ModelViewSet):
             return self._update_chamado(chamado, data)
 
         elif user.groups.filter(name='tecnicos').exists():
-            allowed_fields = {'tecnico_responsavel', 'status', 'titulo', 'descricao'}
+            allowed_fields = {'tecnico_responsavel', 'status', 'titulo', 'descricao', 'prioridade'}
             if not set(data.keys()).issubset(allowed_fields):
-                raise PermissionDenied("Técnicos só podem editar status, se autoatribuir, título e descrição.")
+                raise PermissionDenied("Técnicos só podem editar status, se autoatribuir, prioridade, título e descrição.")
 
             if 'tecnico_responsavel' in data and str(data['tecnico_responsavel']) != str(user.id):
                 raise PermissionDenied("Técnicos só podem se autoatribuir.")

@@ -1,4 +1,3 @@
-# contas/views.py
 from rest_framework import generics
 from .serializers import UserSerializer, CustomTokenObtainPairSerializer
 from .models import CustomUser
@@ -8,5 +7,5 @@ class UserCreateView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
 
-class CustomTokenView(TokenObtainPairView):
+class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer

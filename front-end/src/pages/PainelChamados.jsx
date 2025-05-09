@@ -6,7 +6,7 @@ const PainelChamados = () => {
   const [chamados, setChamados] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [tecnicosSelecionados, setTecnicosSelecionados] = useState({});
-  const [gravidades, setGravidades] = useState({});
+  const [prioridades, setPrioridades] = useState({});
   const { user } = useContext(AuthContext);
   const token = localStorage.getItem('access');
 
@@ -16,7 +16,7 @@ const PainelChamados = () => {
       fetchUsuarios();
     }
   }, [user]);
-  
+
   const fetchChamados = async () => {
     const res = await axios.get('http://localhost:8000/api/chamados/', {
       headers: { Authorization: `Bearer ${token}` }
@@ -34,7 +34,7 @@ const PainelChamados = () => {
   const atribuirChamado = async (idChamado, idTecnico) => {
     try {
       await axios.patch(`http://localhost:8000/api/chamados/${idChamado}/`, {
-        tecnico: idTecnico
+        tecnico_responsavel: idTecnico
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -49,10 +49,10 @@ const PainelChamados = () => {
     await atribuirChamado(idChamado, user.id);
   };
 
-  const classificarChamado = async (idChamado, gravidade) => {
+  const classificarChamado = async (idChamado, prioridade) => {
     try {
       await axios.patch(`http://localhost:8000/api/chamados/${idChamado}/`, {
-        gravidade: gravidade
+        prioridade: prioridade
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -71,32 +71,32 @@ const PainelChamados = () => {
           <p><strong>{chamado.titulo}</strong></p>
           <p>{chamado.descricao}</p>
           <p>Status: {chamado.status}</p>
-          <p>Gravidade: {chamado.gravidade || 'Não classificada'}</p>
-          <p>Técnico: {chamado.tecnico_nome || 'Não atribuído'}</p>
+          <p>Prioridade: {chamado.prioridade || 'Não classificada'}</p>
+          <p>Técnico: {chamado.tecnico_responsavel || 'Não atribuído'}</p>
 
           {/* TÉCNICO - AUTOATRIBUIR */}
-          {user?.tipo === 'tecnico' && !chamado.tecnico &&
+          {user?.tipo === 'tecnico' && !chamado.tecnico_responsavel &&
             <button onClick={() => autoAtribuirChamado(chamado.id)}>
               Me Atribuir
             </button>
           }
 
-          {/* TÉCNICO OU ADMIN - CLASSIFICAR GRAVIDADE */}
+          {/* TÉCNICO OU ADMIN - CLASSIFICAR PRIORIDADE */}
           {(user?.tipo === 'tecnico' || user?.tipo === 'admin') &&
             <div style={{ marginTop: 10 }}>
               <select
-                value={gravidades[chamado.id] || ''}
+                value={prioridades[chamado.id] || ''}
                 onChange={(e) =>
-                  setGravidades({ ...gravidades, [chamado.id]: e.target.value })
+                  setPrioridades({ ...prioridades, [chamado.id]: e.target.value })
                 }
               >
-                <option value="">Classificar Gravidade</option>
+                <option value="">Classificar Prioridade</option>
                 <option value="baixa">Baixa</option>
                 <option value="media">Média</option>
                 <option value="alta">Alta</option>
               </select>
               <button onClick={() =>
-                classificarChamado(chamado.id, gravidades[chamado.id])
+                classificarChamado(chamado.id, prioridades[chamado.id])
               }>
                 Classificar
               </button>
@@ -129,10 +129,8 @@ const PainelChamados = () => {
           )}
         </div>
       ))}
-       <button onClick={() => alert("Estou aqui!")}>Botão de Teste</button>
     </div>
   );
-
 };
 
 export default PainelChamados;
