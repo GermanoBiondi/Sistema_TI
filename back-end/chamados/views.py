@@ -1,43 +1,45 @@
-from rest_framework import viewsets, filters, status
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.permissions import IsAuthenticated
-from django_filters.rest_framework import DjangoFilterBackend
+from django.utils import timezone
 from django.db.models import Q
 
 from .models import Chamado
 from .serializers import ChamadoSerializer
 
 class ChamadoViewSet(viewsets.ModelViewSet):
+    queryset = Chamado.objects.all().order_by('-data_criacao')
     serializer_class = ChamadoSerializer
-    permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['status', 'prioridade']
-    search_fields = ['titulo', 'descricao']
-    ordering_fields = ['data_criacao']
 
     def get_queryset(self):
         user = self.request.user
-
-        if user.is_superuser or user.is_staff:
-            return Chamado.objects.all().order_by('-data_criacao')
-
-        elif user.groups.filter(name='tecnicos').exists():
-            return Chamado.objects.filter(
-                Q(tecnico_responsavel=user) |
+        if user.is_superuser:
+            return self.queryset
+        if user.groups.filter(name='tecnico').exists():
+            return self.queryset.filter(
+                Q(tecnico_responsavel=user) | 
                 Q(status='aberto', tecnico_responsavel__isnull=True)
-            ).order_by('-data_criacao')
+            )
+        return self.queryset.filter(solicitante=user)
 
-        return Chamado.objects.filter(solicitante=user).order_by('-data_criacao')
-
-    def perform_create(self, serializer):
-        serializer.save(solicitante=self.request.user)
-
-    def update(self, request, *args, **kwargs):
+    @action(detail=True, methods=['post'])
+    def atribuir(self, request, pk=None):
         chamado = self.get_object()
-        user = request.user
-        data = request.data
+        if not request.user.is_superuser and not request.user.groups.filter(name='tecnico').exists():
+            raise PermissionDenied("Sem permissão para atribuir chamados")
+        
+        tecnico_id = request.data.get('tecnico_id')
+        if tecnico_id and not request.user.is_superuser:
+            raise PermissionDenied("Apenas administradores podem atribuir a outros técnicos")
+        
+        try:
+            chamado = Chamado.atribuir_tecnico(chamado.id, tecnico_id)
+            return Response(self.get_serializer(chamado).data)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+<<<<<<< HEAD
         if user.is_superuser or user.is_staff:
             return self._update_chamado(chamado, data)
 
@@ -64,3 +66,18 @@ class ChamadoViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
+=======
+    @action(detail=True, methods=['post'])
+    def classificar(self, request, pk=None):
+        chamado = self.get_object()
+        if chamado.solicitante != request.user and not request.user.is_superuser:
+            raise PermissionDenied("Apenas o solicitante pode classificar")
+        
+        prioridade = request.data.get('prioridade')
+        if prioridade not in dict(Chamado.PRIORIDADE_CHOICES).keys():
+            return Response({'error': 'Prioridade inválida'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        chamado.prioridade = prioridade
+        chamado.save()
+        return Response(self.get_serializer(chamado).data)
+>>>>>>> 851419670cee2e2ba4741d63aa4b1fe8ea44e7c4
