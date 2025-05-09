@@ -19,10 +19,10 @@ class ChamadoViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
 
-        if user.is_superuser or user.is_staff:
+        if user.is_superuser or user.tipo == 'admin':
             return Chamado.objects.all().order_by('-data_criacao')
 
-        elif user.groups.filter(name='tecnicos').exists():
+        elif user.tipo == 'tecnico':
             return Chamado.objects.filter(
                 Q(tecnico_responsavel=user) |
                 Q(status='aberto', tecnico_responsavel__isnull=True)
@@ -38,10 +38,13 @@ class ChamadoViewSet(viewsets.ModelViewSet):
         user = request.user
         data = request.data
 
-        if user.is_superuser or user.is_staff:
+        if user.is_superuser or user.tipo == 'admin':
             return self._update_chamado(chamado, data)
 
-        elif user.groups.filter(name='tecnicos').exists():
+        elif user.tipo == 'tecnico':
+            if chamado.tecnico_responsavel and chamado.tecnico_responsavel != user:
+                raise PermissionDenied("Você não pode editar chamados atribuídos a outro técnico.")
+
             allowed_fields = {'tecnico_responsavel', 'status', 'titulo', 'descricao', 'prioridade'}
             if not set(data.keys()).issubset(allowed_fields):
                 raise PermissionDenied("Técnicos só podem editar status, se autoatribuir, prioridade, título e descrição.")

@@ -72,7 +72,7 @@ const PainelChamados = () => {
           <p>{chamado.descricao}</p>
           <p>Status: {chamado.status}</p>
           <p>Prioridade: {chamado.prioridade || 'Não classificada'}</p>
-          <p>Técnico: {chamado.tecnico_responsavel || 'Não atribuído'}</p>
+          <p>Técnico: {chamado.tecnico_responsavel_nome || 'Não atribuído'}</p>
 
           {/* TÉCNICO - AUTOATRIBUIR */}
           {user?.tipo === 'tecnico' && !chamado.tecnico_responsavel &&
