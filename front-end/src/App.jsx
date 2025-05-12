@@ -5,6 +5,8 @@ import Home from './pages/Home';
 import PrivateRoute from './PrivateRoute';
 import ChamadoForm from './pages/ChamadoForm';
 import PainelChamados from './pages/PainelChamados';
+import CadastroEquipamento from './pages/CadastroEquipamento';
+import SolicitacaoEquipamento from './pages/SolicitacaoEquipamento';
 
 export default function App() {
   return (
@@ -34,6 +36,22 @@ export default function App() {
             element={
               <PrivateRoute>
                 <PainelChamados />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/cadastro-equipamento" 
+            element={
+              <PrivateRoute>
+                <CadastroEquipamento />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/solicitacao-equipamento" 
+            element={
+              <PrivateRoute>
+                <SolicitacaoEquipamento />
               </PrivateRoute>
             } 
           />

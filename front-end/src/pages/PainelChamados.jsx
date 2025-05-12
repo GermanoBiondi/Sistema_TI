@@ -1,6 +1,8 @@
+// src/pages/PainelChamados.jsx
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
+import '../styles/PainelChamados.css';
 
 const PainelChamados = () => {
   const [chamados, setChamados] = useState([]);
@@ -64,69 +66,69 @@ const PainelChamados = () => {
   };
 
   return (
-    <div>
-      <h2>Painel de Chamados</h2>
+    <div className="container">
+      <h2 className="my-4">Painel de Chamados</h2>
       {chamados.map((chamado) => (
-        <div key={chamado.id} style={{ border: '1px solid #ccc', marginBottom: 10, padding: 10 }}>
-          <p><strong>{chamado.titulo}</strong></p>
-          <p>{chamado.descricao}</p>
-          <p>Status: {chamado.status}</p>
-          <p>Prioridade: {chamado.prioridade || 'Não classificada'}</p>
-          <p>Técnico: {chamado.tecnico_responsavel_nome || 'Não atribuído'}</p>
+        <div key={chamado.id} className="card mb-3 p-3">
+          <div className="card-body">
+            <h5 className="card-title">{chamado.titulo}</h5>
+            <p className="card-text">{chamado.descricao}</p>
+            <p>Status: {chamado.status}</p>
+            <p>Prioridade: {chamado.prioridade || 'Não classificada'}</p>
+            <p>Técnico: {chamado.tecnico_responsavel_nome || 'Não atribuído'}</p>
 
-          {/* TÉCNICO - AUTOATRIBUIR */}
-          {user?.tipo === 'tecnico' && !chamado.tecnico_responsavel &&
-            <button onClick={() => autoAtribuirChamado(chamado.id)}>
-              Me Atribuir
-            </button>
-          }
-
-          {/* TÉCNICO OU ADMIN - CLASSIFICAR PRIORIDADE */}
-          {(user?.tipo === 'tecnico' || user?.tipo === 'admin') &&
-            <div style={{ marginTop: 10 }}>
-              <select
-                value={prioridades[chamado.id] || ''}
-                onChange={(e) =>
-                  setPrioridades({ ...prioridades, [chamado.id]: e.target.value })
-                }
-              >
-                <option value="">Classificar Prioridade</option>
-                <option value="baixa">Baixa</option>
-                <option value="media">Média</option>
-                <option value="alta">Alta</option>
-              </select>
-              <button onClick={() =>
-                classificarChamado(chamado.id, prioridades[chamado.id])
-              }>
-                Classificar
+            {/* TÉCNICO - AUTOATRIBUIR */}
+            {user?.tipo === 'tecnico' && !chamado.tecnico_responsavel &&
+              <button onClick={() => autoAtribuirChamado(chamado.id)} className="btn btn-info">
+                Me Atribuir
               </button>
-            </div>
-          }
+            }
 
-          {/* ADMIN - ATRIBUIR TÉCNICO */}
-          {user?.tipo === 'admin' && (
-            <div style={{ marginTop: 10 }}>
-              <select
-                value={tecnicosSelecionados[chamado.id] || ''}
-                onChange={(e) =>
-                  setTecnicosSelecionados({
-                    ...tecnicosSelecionados,
-                    [chamado.id]: e.target.value
-                  })
-                }
-              >
-                <option value="">Atribuir Técnico</option>
-                {usuarios.map((u) => (
-                  <option key={u.id} value={u.id}>{u.username}</option>
-                ))}
-              </select>
-              <button onClick={() =>
-                atribuirChamado(chamado.id, tecnicosSelecionados[chamado.id])
-              }>
-                Atribuir
-              </button>
-            </div>
-          )}
+            {/* TÉCNICO OU ADMIN - CLASSIFICAR PRIORIDADE */}
+            {(user?.tipo === 'tecnico' || user?.tipo === 'admin') &&
+              <div className="mt-3">
+                <select
+                  value={prioridades[chamado.id] || ''}
+                  onChange={(e) => setPrioridades({ ...prioridades, [chamado.id]: e.target.value })}
+                  className="form-select"
+                >
+                  <option value="">Classificar Prioridade</option>
+                  <option value="baixa">Baixa</option>
+                  <option value="media">Média</option>
+                  <option value="alta">Alta</option>
+                </select>
+                <button onClick={() => classificarChamado(chamado.id, prioridades[chamado.id])} className="btn btn-primary mt-2">
+                  Classificar
+                </button>
+              </div>
+            }
+
+            {/* ADMIN - ATRIBUIR TÉCNICO */}
+            {user?.tipo === 'admin' && (
+              <div className="mt-3">
+                <select
+                  value={tecnicosSelecionados[chamado.id] || ''}
+                  onChange={(e) =>
+                    setTecnicosSelecionados({
+                      ...tecnicosSelecionados,
+                      [chamado.id]: e.target.value
+                    })
+                  }
+                  className="form-select"
+                >
+                  <option value="">Atribuir Técnico</option>
+                  {usuarios.map((u) => (
+                    <option key={u.id} value={u.id}>{u.username}</option>
+                  ))}
+                </select>
+                <button onClick={() =>
+                  atribuirChamado(chamado.id, tecnicosSelecionados[chamado.id])
+                } className="btn btn-success mt-2">
+                  Atribuir
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       ))}
     </div>

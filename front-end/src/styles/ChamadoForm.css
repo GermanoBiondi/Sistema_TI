@@ -1,0 +1,12 @@
+.chamado-form-container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 2rem;
+}
+
+.chamado-form-card {
+  width: 100%;
+  max-width: 600px;
+  border-radius: 1rem;
+  background-color: white;
+}

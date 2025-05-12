@@ -1,6 +1,7 @@
 // src/pages/Login.jsx
 import { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import '../styles/Login.css'; // Importa o CSS
 
 export default function Login() {
   const { login } = useContext(AuthContext);
@@ -18,14 +19,34 @@ export default function Login() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <input placeholder="Usuário" value={username}
-             onChange={e => setUsername(e.target.value)} />
-      <input type="password" placeholder="Senha" value={password}
-             onChange={e => setPassword(e.target.value)} />
-      <button type="submit">Entrar</button>
-    </form>
+    <div className="container d-flex align-items-center justify-content-center login-container">
+      <div className="card shadow login-card">
+        <h2 className="text-center mb-4">Login</h2>
+        {error && <div className="alert alert-danger">{error}</div>}
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Usuário"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <input
+              type="password"
+              className="form-control"
+              placeholder="Senha"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" className="btn btn-primary w-100">Entrar</button>
+        </form>
+      </div>
+    </div>
   );
 }

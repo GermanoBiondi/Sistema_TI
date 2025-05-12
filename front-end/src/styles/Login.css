@@ -1,0 +1,37 @@
+/* Fundo com gradiente suave */
+body {
+  background: linear-gradient(135deg, #99c7f8a6, #905df0);
+  height: 100vh;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Centraliza o login na tela */
+.login-container {
+  min-height: 100vh;
+}
+
+/* Cartão de login com sombra e bordas arredondadas */
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  border-radius: 1rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Inputs com foco suave */
+.login-card input:focus {
+  border-color: #6f42c1;
+  box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
+}
+
+/* Botão com transição suave */
+.login-card button {
+  transition: background-color 0.3s ease;
+}
+
+.login-card button:hover {
+  background-color: #0056b3;
+}
