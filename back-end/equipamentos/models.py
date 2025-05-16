@@ -2,8 +2,9 @@ from django.db import models
 from django.conf import settings
 
 class SolicitacaoEquipamento(models.Model):
-    nome = models.CharField(max_length=100)
+    equipamento = models.ForeignKey('Equipamento', on_delete=models.CASCADE)
     descricao = models.TextField(blank=True)
+    resposta = models.TextField(blank=True, null=True)
     data_solicitacao = models.DateTimeField(auto_now_add=True)
     solicitante = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     status = models.CharField(max_length=20, default='Pendente')

@@ -27,11 +27,12 @@ const PainelChamados = () => {
   };
 
   const fetchUsuarios = async () => {
-    const res = await axios.get('http://localhost:8000/api/auth/usuarios/', {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    setUsuarios(res.data.filter(u => u.tipo === 'tecnico'));
-  };
+  const res = await axios.get('http://localhost:8000/api/auth/tecnicos/', {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  setUsuarios(res.data);
+};
+
 
   const atribuirChamado = async (idChamado, idTecnico) => {
     try {

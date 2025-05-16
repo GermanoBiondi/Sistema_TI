@@ -7,6 +7,14 @@ class EquipamentoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SolicitacaoEquipamentoSerializer(serializers.ModelSerializer):
+    equipamento = EquipamentoSerializer(read_only=True)
+    equipamento_id = serializers.PrimaryKeyRelatedField(
+        queryset=Equipamento.objects.all(),
+        source='equipamento',
+        write_only=True
+    )
+    solicitante_nome = serializers.CharField(source='solicitante.username', read_only=True)
+
     class Meta:
         model = SolicitacaoEquipamento
         fields = '__all__'

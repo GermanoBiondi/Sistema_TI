@@ -2,13 +2,14 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from chamados.views import ChamadoViewSet
-from equipamentos.views import SolicitacaoEquipamentoViewSet
+from equipamentos.views import EquipamentoViewSet, SolicitacaoEquipamentoViewSet
 from contas.views import CustomTokenObtainPairView
 from rest_framework_simplejwt.views import TokenRefreshView
 
 router = DefaultRouter()
 router.register(r'chamados', ChamadoViewSet, basename='chamado')
-router.register(r'equipamentos', SolicitacaoEquipamentoViewSet, basename='equipamento')
+router.register(r'equipamentos', EquipamentoViewSet, basename='equipamento')  # <-- CORRETO
+router.register(r'solicitacoes', SolicitacaoEquipamentoViewSet, basename='solicitacao')  # <-- CORRETO
 
 urlpatterns = [
     path('admin/', admin.site.urls),

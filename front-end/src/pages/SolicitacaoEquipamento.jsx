@@ -9,16 +9,26 @@ export default function SolicitacaoEquipamento() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Buscar os equipamentos cadastrados sempre que o componente for renderizado
-    api.get('equipamentos/', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('access')}`,
-      },
-    })
-      .then((response) => setEquipamentos(response.data))
-      .catch((error) => {
+    const carregarEquipamentos = async () => {
+      try {
+        const response = await api.get('equipamentos/', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('access')}`,
+          },
+        });
+
+        console.log('Equipamentos recebidos:', response.data); // 👈 verificação
+        setEquipamentos(response.data);
+      } catch (error) {
         console.error('Erro ao buscar equipamentos:', error);
-      });
+        alert(
+          'Erro ao carregar equipamentos: ' +
+            (error.response?.data?.detail || error.message)
+        );
+      }
+    };
+
+    carregarEquipamentos();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -30,20 +40,24 @@ export default function SolicitacaoEquipamento() {
     }
 
     try {
-      // Enviar a solicitação de equipamento
-      await api.post('solicitacoes/', {
-        equipamento: equipamentoSelecionado,
-        descricao,
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('access')}`,
+      await api.post(
+        'solicitacoes/',
+        {
+          equipamento: equipamentoSelecionado,
+          descricao,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('access')}`,
+          },
+        }
+      );
+
       alert('Solicitação enviada com sucesso!');
       navigate('/home');
     } catch (err) {
       console.error('Erro ao enviar solicitação:', err);
-      alert('Erro ao enviar solicitação');
+      alert('Erro ao enviar solicitação: ' + (err.response?.data?.detail || err.message));
     }
   };
 
@@ -61,11 +75,13 @@ export default function SolicitacaoEquipamento() {
             required
           >
             <option value="">Selecione um equipamento</option>
-            {equipamentos.map((equipamento) => (
-              <option key={equipamento.id} value={equipamento.id}>
-                {equipamento.nome}
-              </option>
-            ))}
+            {equipamentos.map((equipamento) =>
+              equipamento?.id && equipamento?.nome ? (
+                <option key={equipamento.id} value={equipamento.id}>
+                  {equipamento.nome}
+                </option>
+              ) : null
+            )}
           </select>
         </div>
 

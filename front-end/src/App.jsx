@@ -7,6 +7,7 @@ import ChamadoForm from './pages/ChamadoForm';
 import PainelChamados from './pages/PainelChamados';
 import CadastroEquipamento from './pages/CadastroEquipamento';
 import SolicitacaoEquipamento from './pages/SolicitacaoEquipamento';
+import AdminSolicitacoes from './pages/AdminSolicitacoes';
 
 export default function App() {
   return (
@@ -55,6 +56,11 @@ export default function App() {
               </PrivateRoute>
             } 
           />
+          <Route path="/admin/solicitacoes" element={
+            <PrivateRoute adminOnly>
+            <AdminSolicitacoes />
+          </PrivateRoute>
+          } />
         </Routes>
       </AuthProvider>
     </Router>

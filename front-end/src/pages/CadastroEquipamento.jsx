@@ -26,7 +26,7 @@ export default function CadastroEquipamento() {
 
         setEquipamentos(response.data); // Atualiza o estado com os equipamentos
       } catch (err) {
-        console.error('Erro ao carregar os equipamentos:', err);
+        alert('Erro ao cadastrar equipamento: ' + JSON.stringify(err.response?.data || err.message));
         alert('Erro ao carregar os equipamentos.');
       }
     };
@@ -45,6 +45,7 @@ export default function CadastroEquipamento() {
       }
 
       // Envia os dados do novo equipamento para a API
+      console.log('Enviando para /equipamentos/:', { nome, descricao });
       await api.post('equipamentos/', { nome, descricao }, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -64,7 +65,7 @@ export default function CadastroEquipamento() {
       setEquipamentos(response.data); // Atualiza a lista de equipamentos
 
     } catch (err) {
-      console.error('Erro ao cadastrar equipamento:', err);
+      console.error('Erro ao cadastrar equipamento:', err.response?.data || err);
       alert('Erro ao cadastrar equipamento.');
     }
   };

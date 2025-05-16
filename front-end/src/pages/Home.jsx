@@ -31,9 +31,14 @@ export default function Home() {
 
           {/* Botão visível apenas para ADMIN */}
           {user?.tipo === 'admin' && (
-            <Link to="/cadastro-equipamento" className="btn btn-outline-success">
-              Cadastrar Equipamento
-            </Link>
+            <>
+              <Link to="/cadastro-equipamento" className="btn btn-outline-success">
+                Cadastrar Equipamento
+              </Link>
+              <Link to="/admin/solicitacoes" className="btn btn-outline-warning">
+                Ver Solicitações
+              </Link>
+            </>
           )}
 
           {/* Botão visível apenas para USUÁRIO COMUM */}
