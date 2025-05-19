@@ -43,7 +43,7 @@ export default function SolicitacaoEquipamento() {
       await api.post(
         'solicitacoes/',
         {
-          equipamento: equipamentoSelecionado,
+          equipamento_id: equipamentoSelecionado,
           descricao,
         },
         {

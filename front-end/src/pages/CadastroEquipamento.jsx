@@ -5,74 +5,86 @@ import { useNavigate } from 'react-router-dom';
 export default function CadastroEquipamento() {
   const [nome, setNome] = useState('');
   const [descricao, setDescricao] = useState('');
-  const [equipamentos, setEquipamentos] = useState([]); // Estado para armazenar os equipamentos cadastrados
+  const [equipamentos, setEquipamentos] = useState([]);
+  const [editandoId, setEditandoId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Função para carregar os equipamentos cadastrados
-    const fetchEquipamentos = async () => {
-      try {
-        const token = localStorage.getItem('access');
-        if (!token) {
-          alert('Você precisa estar logado para visualizar os equipamentos.');
-          return;
-        }
-
-        const response = await api.get('equipamentos/', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setEquipamentos(response.data); // Atualiza o estado com os equipamentos
-      } catch (err) {
-        alert('Erro ao cadastrar equipamento: ' + JSON.stringify(err.response?.data || err.message));
-        alert('Erro ao carregar os equipamentos.');
-      }
-    };
-
-    fetchEquipamentos(); // Carregar os equipamentos ao carregar o componente
+    carregarEquipamentos();
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const carregarEquipamentos = async () => {
     try {
       const token = localStorage.getItem('access');
-      if (!token) {
-        alert('Você precisa estar logado para cadastrar um equipamento.');
-        return;
-      }
-
-      // Envia os dados do novo equipamento para a API
-      console.log('Enviando para /equipamentos/:', { nome, descricao });
-      await api.post('equipamentos/', { nome, descricao }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      alert('Equipamento cadastrado com sucesso!');
-      setNome(''); // Limpa o campo do nome
-      setDescricao(''); // Limpa o campo de descrição
-
-      // Recarrega a lista de equipamentos
       const response = await api.get('equipamentos/', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setEquipamentos(response.data); // Atualiza a lista de equipamentos
+      setEquipamentos(response.data);
+    } catch (err) {
+      alert('Erro ao carregar equipamentos: ' + JSON.stringify(err.response?.data || err.message));
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('access');
+    if (!token) {
+      alert('Você precisa estar logado.');
+      return;
+    }
+
+    try {
+      if (editandoId) {
+        await api.put(`equipamentos/${editandoId}/`, { nome, descricao }, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        alert('Equipamento atualizado com sucesso!');
+        setEditandoId(null);
+      } else {
+        await api.post('equipamentos/', { nome, descricao }, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        alert('Equipamento cadastrado com sucesso!');
+      }
+
+      setNome('');
+      setDescricao('');
+      carregarEquipamentos();
 
     } catch (err) {
-      console.error('Erro ao cadastrar equipamento:', err.response?.data || err);
-      alert('Erro ao cadastrar equipamento.');
+      console.error('Erro ao salvar equipamento:', err.response?.data || err);
+      alert('Erro ao salvar equipamento.');
+    }
+  };
+
+  const handleEditar = (equipamento) => {
+    setEditandoId(equipamento.id);
+    setNome(equipamento.nome);
+    setDescricao(equipamento.descricao);
+  };
+
+  const handleExcluir = async (id) => {
+    const confirmar = window.confirm("Tem certeza que deseja excluir?");
+    if (!confirmar) return;
+
+    try {
+      await api.delete(`equipamentos/${id}/`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('access')}` },
+      });
+      alert('Equipamento excluído com sucesso.');
+      carregarEquipamentos();
+    } catch (err) {
+      console.error('Erro ao excluir equipamento:', err.response?.data || err);
+      alert('Erro ao excluir equipamento.');
     }
   };
 
   return (
     <div className="container mt-5">
-      <h2>Cadastrar Novo Equipamento</h2>
+      <h2>{editandoId ? 'Editar Equipamento' : 'Cadastrar Novo Equipamento'}</h2>
+
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="nome" className="form-label">Nome do Equipamento</label>
@@ -96,10 +108,20 @@ export default function CadastroEquipamento() {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary">Cadastrar Equipamento</button>
+        <button type="submit" className="btn btn-primary">
+          {editandoId ? 'Atualizar' : 'Cadastrar'}
+        </button>
+        {editandoId && (
+          <button type="button" className="btn btn-secondary ms-2" onClick={() => {
+            setEditandoId(null);
+            setNome('');
+            setDescricao('');
+          }}>
+            Cancelar
+          </button>
+        )}
       </form>
 
-      {/* Lista de Equipamentos Cadastrados */}
       <div className="mt-5">
         <h3>Equipamentos Cadastrados</h3>
         {equipamentos.length === 0 ? (
@@ -108,9 +130,10 @@ export default function CadastroEquipamento() {
           <table className="table mt-3">
             <thead>
               <tr>
-                <th scope="col">Nome</th>
-                <th scope="col">Descrição</th>
-                <th scope="col">Data de Cadastro</th>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Data de Cadastro</th>
+                <th>Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -119,6 +142,20 @@ export default function CadastroEquipamento() {
                   <td>{equipamento.nome}</td>
                   <td>{equipamento.descricao}</td>
                   <td>{new Date(equipamento.data_cadastro).toLocaleDateString()}</td>
+                  <td>
+                    <button
+                      className="btn btn-warning btn-sm me-2"
+                      onClick={() => handleEditar(equipamento)}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => handleExcluir(equipamento.id)}
+                    >
+                      Excluir
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -1,0 +1,49 @@
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 2rem;
+}
+
+.table {
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+}
+
+.table th {
+  background-color: #f1f3f5;
+}
+
+.table td, .table th {
+  vertical-align: middle;
+  padding: 1rem;
+}
+
+textarea {
+  width: 100%;
+  resize: vertical;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  min-height: 80px;
+}
+
+table td {
+  vertical-align: middle;        
+  white-space: nowrap;            
+}
+
+table td button {
+  min-width: 105px;              
+  margin: 0 4px;                 
+  white-space: nowrap;          
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+textarea {
+  min-width: 200px;
+  max-width: 100%;
+  resize: vertical;
+}

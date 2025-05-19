@@ -27,12 +27,11 @@ const PainelChamados = () => {
   };
 
   const fetchUsuarios = async () => {
-  const res = await axios.get('http://localhost:8000/api/auth/tecnicos/', {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  setUsuarios(res.data);
-};
-
+    const res = await axios.get('http://localhost:8000/api/auth/tecnicos/', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    setUsuarios(res.data);
+  };
 
   const atribuirChamado = async (idChamado, idTecnico) => {
     try {
@@ -66,6 +65,20 @@ const PainelChamados = () => {
     }
   };
 
+  // Nova função para excluir chamado
+  const excluirChamado = async (idChamado) => {
+    if (!window.confirm("Tem certeza que deseja excluir este chamado?")) return;
+    try {
+      await axios.delete(`http://localhost:8000/api/chamados/${idChamado}/`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchChamados();
+      alert("Chamado excluído com sucesso.");
+    } catch {
+      alert("Erro ao excluir chamado.");
+    }
+  };
+
   return (
     <div className="container">
       <h2 className="my-4">Painel de Chamados</h2>
@@ -80,7 +93,7 @@ const PainelChamados = () => {
 
             {/* TÉCNICO - AUTOATRIBUIR */}
             {user?.tipo === 'tecnico' && !chamado.tecnico_responsavel &&
-              <button onClick={() => autoAtribuirChamado(chamado.id)} className="btn btn-info">
+              <button onClick={() => autoAtribuirChamado(chamado.id)} className="btn btn-info me-2">
                 Me Atribuir
               </button>
             }
@@ -124,8 +137,13 @@ const PainelChamados = () => {
                 </select>
                 <button onClick={() =>
                   atribuirChamado(chamado.id, tecnicosSelecionados[chamado.id])
-                } className="btn btn-success mt-2">
+                } className="btn btn-success mt-2 me-2">
                   Atribuir
+                </button>
+
+                {/* Botão de excluir para admin */}
+                <button onClick={() => excluirChamado(chamado.id)} className="btn btn-danger mt-2">
+                  Excluir
                 </button>
               </div>
             )}

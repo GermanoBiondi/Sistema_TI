@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../api/client';
+import '../styles/AdminSolicitacoes.css';
 
 export default function AdminSolicitacoes() {
   const [solicitacoes, setSolicitacoes] = useState([]);
@@ -68,8 +69,8 @@ export default function AdminSolicitacoes() {
               <td>
                 {editandoId === sol.id ? (
                   <>
-                    <button onClick={() => salvarResposta(sol.id)} className="btn btn-sm btn-success me-2">Salvar</button>
-                    <button onClick={() => setEditandoId(null)} className="btn btn-sm btn-secondary">Cancelar</button>
+                    <button onClick={() => salvarResposta(sol.id)} className="btn btn-success me-2">Salvar</button>
+                    <button onClick={() => setEditandoId(null)} className="btn btn-secondary">Cancelar</button>
                   </>
                 ) : (
                   <button
@@ -77,7 +78,7 @@ export default function AdminSolicitacoes() {
                       setEditandoId(sol.id);
                       setResposta(sol.resposta || '');
                     }}
-                    className="btn btn-sm btn-primary"
+                    className="btn btn-primary"
                   >
                     Responder
                   </button>
