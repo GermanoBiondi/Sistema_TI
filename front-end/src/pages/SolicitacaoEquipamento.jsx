@@ -6,29 +6,40 @@ export default function SolicitacaoEquipamento() {
   const [equipamentos, setEquipamentos] = useState([]);
   const [equipamentoSelecionado, setEquipamentoSelecionado] = useState('');
   const [descricao, setDescricao] = useState('');
+  const [minhasSolicitacoes, setMinhasSolicitacoes] = useState([]);
   const navigate = useNavigate();
 
+  const carregarEquipamentosESolicitacoes = async () => {
+    try {
+      const token = localStorage.getItem('access');
+      const headers = { Authorization: `Bearer ${token}` };
+
+      // 1. Carregar solicitações do usuário
+      const solicitacoesRes = await api.get('solicitacoes/', { headers });
+      const solicitacoes = solicitacoesRes.data;
+      setMinhasSolicitacoes(solicitacoes);
+
+      // 2. Obter os IDs dos equipamentos já solicitados
+      const idsSolicitados = solicitacoes.map((s) => s.equipamento?.id);
+
+      // 3. Carregar equipamentos
+      const equipamentosRes = await api.get('equipamentos/', { headers });
+      const equipamentosDisponiveis = equipamentosRes.data.filter(
+        (equip) => !idsSolicitados.includes(equip.id)
+      );
+
+      setEquipamentos(equipamentosDisponiveis);
+    } catch (error) {
+      console.error('Erro ao carregar dados:', error);
+      alert(
+        'Erro ao carregar equipamentos: ' +
+        (error.response?.data?.detail || error.message)
+      );
+    }
+  };
+
   useEffect(() => {
-    const carregarEquipamentos = async () => {
-      try {
-        const response = await api.get('equipamentos/', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('access')}`,
-          },
-        });
-
-        console.log('Equipamentos recebidos:', response.data); // 👈 verificação
-        setEquipamentos(response.data);
-      } catch (error) {
-        console.error('Erro ao buscar equipamentos:', error);
-        alert(
-          'Erro ao carregar equipamentos: ' +
-            (error.response?.data?.detail || error.message)
-        );
-      }
-    };
-
-    carregarEquipamentos();
+    carregarEquipamentosESolicitacoes();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -54,7 +65,9 @@ export default function SolicitacaoEquipamento() {
       );
 
       alert('Solicitação enviada com sucesso!');
-      navigate('/home');
+      setDescricao('');
+      setEquipamentoSelecionado('');
+      await carregarEquipamentosESolicitacoes(); // Atualiza lista
     } catch (err) {
       console.error('Erro ao enviar solicitação:', err);
       alert('Erro ao enviar solicitação: ' + (err.response?.data?.detail || err.message));
@@ -97,6 +110,35 @@ export default function SolicitacaoEquipamento() {
 
         <button type="submit" className="btn btn-primary">Enviar Solicitação</button>
       </form>
+
+      {/* Tabela de solicitações já feitas */}
+      <div className="mt-5">
+        <h4>Minhas Solicitações</h4>
+        {minhasSolicitacoes.length === 0 ? (
+          <p>Você ainda não fez nenhuma solicitação.</p>
+        ) : (
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Equipamento</th>
+                <th>Descrição</th>
+                <th>Resposta</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {minhasSolicitacoes.map((s) => (
+                <tr key={s.id}>
+                  <td>{s.equipamento?.nome || '—'}</td>
+                  <td>{s.descricao}</td>
+                  <td>{s.resposta || 'Aguardando resposta'}</td>
+                  <td>{s.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
     </div>
   );
 }

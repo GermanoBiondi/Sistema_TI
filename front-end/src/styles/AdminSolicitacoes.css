@@ -1,6 +1,6 @@
 .container {
-  max-width: 1000px;
-  margin: auto;
+  max-width: 10000px;
+  margin: auto ;
   padding: 2rem;
 }
 
@@ -47,3 +47,4 @@ textarea {
   max-width: 100%;
   resize: vertical;
 }
+

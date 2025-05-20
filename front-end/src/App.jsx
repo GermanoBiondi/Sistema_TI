@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import PrivateRoute from './PrivateRoute';
 import ChamadoForm from './pages/ChamadoForm';
 import PainelChamados from './pages/PainelChamados';
+import HistoricoChamados from './pages/HistoricoChamados'; // ✅ novo
 import CadastroEquipamento from './pages/CadastroEquipamento';
 import SolicitacaoEquipamento from './pages/SolicitacaoEquipamento';
 import AdminSolicitacoes from './pages/AdminSolicitacoes';
@@ -41,6 +42,14 @@ export default function App() {
             } 
           />
           <Route 
+            path="/historico" 
+            element={
+              <PrivateRoute>
+                <HistoricoChamados />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
             path="/cadastro-equipamento" 
             element={
               <PrivateRoute>
@@ -58,8 +67,8 @@ export default function App() {
           />
           <Route path="/admin/solicitacoes" element={
             <PrivateRoute adminOnly>
-            <AdminSolicitacoes />
-          </PrivateRoute>
+              <AdminSolicitacoes />
+            </PrivateRoute>
           } />
         </Routes>
       </AuthProvider>

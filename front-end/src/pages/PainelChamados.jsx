@@ -1,4 +1,3 @@
-// src/pages/PainelChamados.jsx
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
@@ -20,17 +19,27 @@ const PainelChamados = () => {
   }, [user]);
 
   const fetchChamados = async () => {
-    const res = await axios.get('http://localhost:8000/api/chamados/', {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    setChamados(res.data);
+    try {
+      const res = await axios.get('http://localhost:8000/api/chamados/', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // Filtra para remover encerrados
+      const chamadosAtivos = res.data.filter(chamado => chamado.status !== 'encerrado');
+      setChamados(chamadosAtivos);
+    } catch (error) {
+      console.error('Erro ao buscar chamados:', error);
+    }
   };
 
   const fetchUsuarios = async () => {
-    const res = await axios.get('http://localhost:8000/api/auth/tecnicos/', {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    setUsuarios(res.data);
+    try {
+      const res = await axios.get('http://localhost:8000/api/auth/tecnicos/', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUsuarios(res.data);
+    } catch (error) {
+      console.error('Erro ao buscar usuários:', error);
+    }
   };
 
   const atribuirChamado = async (idChamado, idTecnico) => {
@@ -65,7 +74,6 @@ const PainelChamados = () => {
     }
   };
 
-  // Nova função para excluir chamado
   const excluirChamado = async (idChamado) => {
     if (!window.confirm("Tem certeza que deseja excluir este chamado?")) return;
     try {
@@ -82,6 +90,7 @@ const PainelChamados = () => {
   return (
     <div className="container">
       <h2 className="my-4">Painel de Chamados</h2>
+      {chamados.length === 0 && <p>Nenhum chamado em aberto.</p>}
       {chamados.map((chamado) => (
         <div key={chamado.id} className="card mb-3 p-3">
           <div className="card-body">
@@ -91,14 +100,12 @@ const PainelChamados = () => {
             <p>Prioridade: {chamado.prioridade || 'Não classificada'}</p>
             <p>Técnico: {chamado.tecnico_responsavel_nome || 'Não atribuído'}</p>
 
-            {/* TÉCNICO - AUTOATRIBUIR */}
             {user?.tipo === 'tecnico' && !chamado.tecnico_responsavel &&
               <button onClick={() => autoAtribuirChamado(chamado.id)} className="btn btn-info me-2">
                 Me Atribuir
               </button>
             }
 
-            {/* TÉCNICO OU ADMIN - CLASSIFICAR PRIORIDADE */}
             {(user?.tipo === 'tecnico' || user?.tipo === 'admin') &&
               <div className="mt-3">
                 <select
@@ -117,7 +124,6 @@ const PainelChamados = () => {
               </div>
             }
 
-            {/* ADMIN - ATRIBUIR TÉCNICO */}
             {user?.tipo === 'admin' && (
               <div className="mt-3">
                 <select
@@ -137,16 +143,18 @@ const PainelChamados = () => {
                 </select>
                 <button onClick={() =>
                   atribuirChamado(chamado.id, tecnicosSelecionados[chamado.id])
-                } className="btn btn-success mt-2 me-2">
+                } className="btn btn-success mt-2">
                   Atribuir
-                </button>
-
-                {/* Botão de excluir para admin */}
-                <button onClick={() => excluirChamado(chamado.id)} className="btn btn-danger mt-2">
-                  Excluir
                 </button>
               </div>
             )}
+
+            <button
+              onClick={() => excluirChamado(chamado.id)}
+              className="btn btn-danger mt-3"
+            >
+              Excluir Chamado
+            </button>
           </div>
         </div>
       ))}

@@ -2,6 +2,7 @@ from rest_framework import viewsets, filters, status
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q
 
@@ -67,3 +68,29 @@ class ChamadoViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
+
+    @action(detail=True, methods=['post'])
+    def encerrar(self, request, pk=None):
+        chamado = self.get_object()
+        user = request.user
+
+        # Verifica se já está encerrado
+        if chamado.status == 'encerrado':
+            return Response({'detail': 'Este chamado já está encerrado.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Admin ou superuser pode encerrar qualquer um
+        if user.is_superuser or user.tipo == 'admin':
+            chamado.status = 'encerrado'
+            chamado.save()
+            return Response({'detail': 'Chamado encerrado com sucesso.'})
+
+        # Técnico pode encerrar apenas os chamados atribuídos a ele
+        if user.tipo == 'tecnico':
+            if chamado.tecnico_responsavel != user:
+                raise PermissionDenied("Você só pode encerrar chamados atribuídos a você.")
+            chamado.status = 'encerrado'
+            chamado.save()
+            return Response({'detail': 'Chamado encerrado com sucesso.'})
+
+        # Usuário comum não pode encerrar
+        raise PermissionDenied("Você não tem permissão para encerrar este chamado.")

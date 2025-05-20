@@ -1,12 +1,12 @@
 .home-container {
   min-height: 100vh;
-  background-color: #f8f9fa;
+  background-color: #c9e3fd;
   padding: 2rem;
 }
 
 .home-card {
   width: 100%;
-  max-width: 600px;
+  max-width: 750px;
   border-radius: 1rem;
-  background-color: white;
+  background-color: rgb(238, 238, 238);
 }
