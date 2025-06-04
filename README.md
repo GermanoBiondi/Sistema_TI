@@ -72,8 +72,6 @@ Administrador	Gerencia usuários, atribui chamados, vê o histórico completo
 Técnico	Visualiza chamados, se responsabiliza, interage com o solicitante
 Usuário	Abre chamados e solicita equipamentos, acompanha o histórico pessoal
 
-### Clone o repositório
-
 📂 Estrutura do Projeto
 Copiar
 Editar
