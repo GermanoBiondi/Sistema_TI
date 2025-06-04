@@ -25,21 +25,30 @@ Visualização de chamados ativos e encerrados
 🧰 Tecnologias Utilizadas
 
 Backend
+
 Django
+
 Django REST Framework
 
 Frontend
+
 React
+
 Axios
+
 Tailwind CSS (ou outra biblioteca de estilo utilizada)
 
 Outros
 SQLite (para ambiente de desenvolvimento)
 
 ⚙️ Instalação
+
 Pré-requisitos
+
 Python 3.10 ou superior
+
 Node.js 16 ou superior
+
 Git
 
 Clone o repositório
