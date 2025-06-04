@@ -1,65 +1,64 @@
-🛠️ Sistema de Chamados de TI
+# 🛠️ Sistema de Chamados de TI
+
 Este é um sistema web para gerenciamento de chamados de suporte técnico e solicitações de equipamentos de TI, desenvolvido para uso interno de empresas. O objetivo é facilitar a comunicação entre funcionários e o setor de TI, centralizando atendimentos e registros.
 
-🚀 Funcionalidades
-Abertura de chamados de suporte técnico
+---
 
-Solicitação de equipamentos de TI
+## 🚀 Funcionalidades
 
-Painel para técnicos visualizarem e se responsabilizarem pelos chamados
+- Abertura de chamados de suporte técnico  
+- Solicitação de equipamentos de TI  
+- Painel para técnicos visualizarem e se responsabilizarem pelos chamados  
+- Histórico de chamados por usuário  
+- Controle de acesso por perfil:
+  - Administrador
+  - Técnico
+  - Usuário comum  
+- Atribuição manual ou automática de chamados  
+- Sistema de mensagens entre técnico e solicitante (canal de comunicação)  
+- Visualização de chamados ativos e encerrados  
 
-Histórico de chamados por usuário
+---
 
-Controle de acesso por perfil:
+## 🧰 Tecnologias Utilizadas
 
-Administrador
-Técnico
-Usuário comum
+### Backend
+- Django  
+- Django REST Framework  
 
-Atribuição manual ou automática de chamados
+### Frontend
+- React  
+- Axios  
+- Tailwind CSS (ou outra biblioteca de estilo utilizada)
 
-Sistema de mensagens entre técnico e solicitante (canal de comunicação)
+### Outros
+- SQLite (para ambiente de desenvolvimento)
 
-Visualização de chamados ativos e encerrados
+---
 
-🧰 Tecnologias Utilizadas
+## ⚙️ Instalação
 
-Backend
-Django
-Django REST Framework
-Frontend
+### Pré-requisitos
 
-React
-Axios
-Tailwind CSS (ou outra biblioteca de estilo utilizada)
+- Python 3.10 ou superior  
+- Node.js 16 ou superior  
+- Git
 
-Outros
-SQLite (para ambiente de desenvolvimento)
+### Clone o repositório
 
-⚙️ Instalação
-Pré-requisitos
-Python 3.10 ou superior
-Node.js 16 ou superior
-Git
-
-Clone o repositório
-bash
-Copiar
-Editar
+```bash
 git clone https://github.com/GermanoBiondi/Sistema_TI/
 cd Sistema_TI
 Backend (Django)
 bash
 Copiar
 Editar
-
 cd backend
 python -m venv venv
 source venv/bin/activate  # No Windows: venv\Scripts\activate
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
-
 Frontend (React)
 bash
 Copiar
@@ -67,7 +66,6 @@ Editar
 cd frontend
 npm install
 npm start
-
 👥 Tipos de Usuário
 Tipo	Permissões
 Administrador	Gerencia usuários, atribui chamados, vê o histórico completo
@@ -75,16 +73,14 @@ Técnico	Visualiza chamados, se responsabiliza, interage com o solicitante
 Usuário	Abre chamados e solicita equipamentos, acompanha o histórico pessoal
 
 📂 Estrutura do Projeto
-cpp
 Copiar
 Editar
-nome-do-repositorio/
+Sistema_TI/
 ├── backend/
 │   └── ... (projeto Django)
 ├── frontend/
 │   └── ... (projeto React)
 └── README.md
-
 📌 Observações
 Este sistema está em desenvolvimento e pode receber novas funcionalidades conforme a necessidade.
 
@@ -93,4 +89,5 @@ Atualmente, não há autenticação integrada com serviços externos. A autentic
 📄 Licença
 Este projeto está licenciado sob a MIT License.
 
-Desenvolvido por Germano Alves Biondi
+Desenvolvido por Germano Alves Biondi 👨‍💻
+https://github.com/GermanoBiondi
