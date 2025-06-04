@@ -46,8 +46,8 @@ Clone o repositório
 bash
 Copiar
 Editar
-git clone https://github.com/seu-usuario/nome-do-repositorio.git
-cd nome-do-repositorio
+git clone https://github.com/GermanoBiondi/Sistema_TI/
+cd Sistema_TI
 Backend (Django)
 bash
 Copiar
